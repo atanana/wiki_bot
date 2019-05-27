@@ -1467,7 +1467,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "wikiBot"
+name = "wiki_bot"
 version = "0.1.0"
 dependencies = [
  "reqwest 0.9.17 (registry+https://github.com/rust-lang/crates.io-index)",

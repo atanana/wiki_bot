@@ -6,7 +6,7 @@ use std::fmt;
 
 use reqwest::Response;
 use select::document::Document;
-use select::predicate::{Attr, Name, Predicate};
+use select::predicate::{Attr};
 
 fn main() {
     test_print().unwrap();
@@ -20,12 +20,11 @@ fn test_print() -> Result<(), Box<Error>> {
 }
 
 fn get_page() -> reqwest::Result<Response> {
-    reqwest::get("https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0")
+    reqwest::get("https://ru.wikipedia.org/")
 }
 
 fn parse_data(page: Response) -> Result<Vec<String>, Box<Error>> {
     let document = Document::from_read(page)?;
-    let query = Attr("id", "main-dyk").descendant(Name("ul"));
     let dyk_root = document.find(Attr("id", "main-dyk")).next().ok_or(NoDyk)?;
     let list = dyk_root.children()
         .filter(|element| element.name() == Some("ul"))
