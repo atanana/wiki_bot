@@ -14,8 +14,9 @@ fn main() {
 
 fn test_print() -> Result<(), Box<Error>> {
     let response = get_page()?;
-    let data = parse_data(response);
-    println!("{:#?}", data);
+    let data = parse_data(response)?;
+    let clean_data = clear_data(data);
+    println!("{:#?}", clean_data);
     Ok(())
 }
 
@@ -30,8 +31,15 @@ fn parse_data(page: Response) -> Result<Vec<String>, Box<Error>> {
         .filter(|element| element.name() == Some("ul"))
         .flat_map(|element| element.children())
         .filter(|element| element.name() == Some("li"));
-    let lines = list.map(|element| element.html()).collect::<Vec<_>>();
-    Ok(lines)
+    Ok(list.map(|element| element.html()).collect())
+}
+
+fn clear_data(data: Vec<String>) -> Vec<String> {
+    data.iter().map(|line| clear_line(line)).collect()
+}
+
+fn clear_line(line: &String) -> String {
+    line.to_owned()
 }
 
 #[derive(Debug, Clone)]
