@@ -12,15 +12,14 @@ use select::predicate::Attr;
 mod errors;
 
 fn main() {
-    test_print().unwrap();
+    do_work().unwrap();
 }
 
-fn test_print() -> Result<(), Box<Error>> {
+fn do_work() -> Result<(), Box<Error>> {
     let response = get_page()?;
     let data = parse_data(response)?;
     let clean_data = clear_data(data)?;
-    let result = send_data(clean_data)?;
-    println!("{:#?}", result);
+    send_data(clean_data)?;
     Ok(())
 }
 
@@ -47,7 +46,7 @@ fn clear_line(line: &String, tag_regex: &Regex) -> String {
     let line = line.replace("/wiki", "https://ru.wikipedia.org/wiki");
     tag_regex.replace_all(&line, |capture: &Captures| {
         match capture[1].as_ref() {
-            "a" | "b" | "i" => capture[0].to_string(),
+            "a" => capture[0].to_string(),
             _ => "".to_string()
         }
     }).to_string()
@@ -62,7 +61,5 @@ fn send_data(data: Vec<String>) -> reqwest::Result<Response> {
         ("text", &data.join("\n\n")),
         ("parse_mode", "HTML")
     ];
-    let request = client.post(&url).form(&params);
-    println!("{:#?}", request);
-    request.send()
+    client.post(&url).form(&params).send()
 }
