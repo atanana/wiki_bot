@@ -59,7 +59,8 @@ fn send_data(data: Vec<String>) -> reqwest::Result<Response> {
     let params = [
         ("chat_id", "@wiki_dyk"),
         ("text", &data.join("\n\n")),
-        ("parse_mode", "HTML")
+        ("parse_mode", "HTML"),
+        ("disable_web_page_preview", "true")
     ];
     client.post(&url).form(&params).send()
 }
