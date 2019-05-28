@@ -2,11 +2,12 @@ extern crate reqwest;
 extern crate select;
 
 use std::error::Error;
-use std::fmt;
 
 use reqwest::Response;
 use select::document::Document;
 use select::predicate::{Attr};
+
+mod errors;
 
 fn main() {
     test_print().unwrap();
@@ -26,7 +27,7 @@ fn get_page() -> reqwest::Result<Response> {
 
 fn parse_data(page: Response) -> Result<Vec<String>, Box<Error>> {
     let document = Document::from_read(page)?;
-    let dyk_root = document.find(Attr("id", "main-dyk")).next().ok_or(NoDyk)?;
+    let dyk_root = document.find(Attr("id", "main-dyk")).next().ok_or(errors::NoDyk)?;
     let list = dyk_root.children()
         .filter(|element| element.name() == Some("ul"))
         .flat_map(|element| element.children())
@@ -41,14 +42,3 @@ fn clear_data(data: Vec<String>) -> Vec<String> {
 fn clear_line(line: &String) -> String {
     line.to_owned()
 }
-
-#[derive(Debug, Clone)]
-struct NoDyk;
-
-impl fmt::Display for NoDyk {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "No dyk!")
-    }
-}
-
-impl Error for NoDyk {}
