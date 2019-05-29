@@ -2,12 +2,7 @@ extern crate regex;
 extern crate reqwest;
 extern crate select;
 
-use std::collections::hash_map::DefaultHasher;
-use std::convert::TryInto;
 use std::error::Error;
-use std::fs;
-use std::hash::{Hash, Hasher};
-use std::io;
 
 use regex::{Captures, Regex};
 use reqwest::{Client, Response};
@@ -15,6 +10,7 @@ use select::document::Document;
 use select::predicate::Attr;
 
 mod errors;
+mod hash;
 
 fn main() {
     do_work().unwrap();
@@ -23,26 +19,15 @@ fn main() {
 fn do_work() -> Result<(), Box<Error>> {
     let response = get_page()?;
     let data = parse_data(response)?;
-    let hash = get_hash(&data);
-    let old_hash = get_old_hash();
+    let hash = hash::calculate_hash(&data);
+    let old_hash = hash::load_hash();
     if hash == old_hash {
         return Ok(());
     }
     let clean_data = clear_data(data)?;
     send_data(clean_data)?;
-    store_hash(hash)?;
+    hash::save_hash(hash)?;
     Ok(())
-}
-
-fn store_hash(hash: u64) -> io::Result<()> {
-    fs::write("store", hash.to_string())
-}
-
-fn get_old_hash() -> u64 {
-    fs::read_to_string("store")
-        .unwrap_or("0".to_owned())
-        .parse::<u64>()
-        .unwrap_or(0u64)
 }
 
 fn get_page() -> reqwest::Result<Response> {
@@ -85,10 +70,4 @@ fn send_data(data: Vec<String>) -> reqwest::Result<Response> {
         ("disable_web_page_preview", "true")
     ];
     client.post(&url).form(&params).send()
-}
-
-fn get_hash(data: &Vec<String>) -> u64 {
-    let mut hasher = DefaultHasher::new();
-    data.hash(&mut hasher);
-    hasher.finish()
 }
