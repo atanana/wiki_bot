@@ -1468,7 +1468,7 @@ dependencies = [
 
 [[package]]
 name = "wiki_bot"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "regex 1.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "reqwest 0.9.17 (registry+https://github.com/rust-lang/crates.io-index)",
