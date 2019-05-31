@@ -23,7 +23,8 @@ pub fn clear_data(data: Vec<String>) -> Result<Vec<String>, Box<Error>> {
 }
 
 fn clear_line(line: &String, tag_regex: &Regex) -> String {
-    let line = line.replace("/wiki", "https://ru.wikipedia.org/wiki");
+    let line = line.replace("/wiki", "https://ru.wikipedia.org/wiki")
+        .replace("&nbsp;", " ");
     tag_regex.replace_all(&line, |capture: &Captures| {
         match capture[1].as_ref() {
             "a" => capture[0].to_string(),
