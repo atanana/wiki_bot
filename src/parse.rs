@@ -17,7 +17,7 @@ pub fn parse_data(page: Response) -> Result<Vec<String>, Box<dyn Error>> {
     Ok(list.map(|element| element.html()).collect())
 }
 
-pub fn clear_data(data: Vec<String>) -> Result<Vec<String>, Box<dyn Error>> {
+pub fn clear_data(data: &Vec<String>) -> Result<Vec<String>, Box<dyn Error>> {
     let tag_regex = Regex::new(r"</?(\w+).*?>")?;
     Ok(data.iter().map(|line| clear_line(line, &tag_regex)).collect())
 }
