@@ -7,7 +7,7 @@ use select::predicate::Attr;
 
 use crate::errors::NoDyk;
 
-pub fn parse_data(page: Response) -> Result<Vec<String>, Box<Error>> {
+pub fn parse_data(page: Response) -> Result<Vec<String>, Box<dyn Error>> {
     let document = Document::from_read(page)?;
     let dyk_root = document.find(Attr("id", "main-dyk")).next().ok_or(NoDyk)?;
     let list = dyk_root.children()
@@ -17,7 +17,7 @@ pub fn parse_data(page: Response) -> Result<Vec<String>, Box<Error>> {
     Ok(list.map(|element| element.html()).collect())
 }
 
-pub fn clear_data(data: Vec<String>) -> Result<Vec<String>, Box<Error>> {
+pub fn clear_data(data: Vec<String>) -> Result<Vec<String>, Box<dyn Error>> {
     let tag_regex = Regex::new(r"</?(\w+).*?>")?;
     Ok(data.iter().map(|line| clear_line(line, &tag_regex)).collect())
 }

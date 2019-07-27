@@ -13,7 +13,7 @@ fn main() {
     do_work().unwrap();
 }
 
-fn do_work() -> Result<(), Box<Error>> {
+fn do_work() -> Result<(), Box<dyn Error>> {
     let response = io::get_page()?;
     let data = parse::parse_data(response)?;
     let hash = hash::calculate_hash(&data);
