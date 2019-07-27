@@ -3,7 +3,6 @@ extern crate reqwest;
 extern crate select;
 
 use std::error::Error;
-use crate::errors::NoDyk;
 
 mod hash;
 mod parse;

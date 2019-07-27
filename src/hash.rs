@@ -1,6 +1,5 @@
 use std::fs;
 use std::io;
-use std::error::Error;
 use crate::errors::NoDyk;
 
 pub fn calculate_hash(data: &Vec<String>) -> Result<&String, NoDyk> {
