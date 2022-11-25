@@ -1,10 +1,11 @@
 use reqwest::{Client, Response};
 
-pub fn get_page() -> reqwest::Result<Response> {
-    reqwest::get("https://ru.wikipedia.org/")
+pub async fn get_page() -> reqwest::Result<String> {
+    let response = reqwest::get("https://ru.wikipedia.org/").await?;
+    response.text().await
 }
 
-pub fn send_data(data: Vec<String>) -> reqwest::Result<Response> {
+pub async fn send_data(data: Vec<String>) -> reqwest::Result<Response> {
     let client = Client::new();
     let token = env!("BOT_TOKEN");
     let url = format!("https://api.telegram.org/bot{}/sendMessage", token);
@@ -14,5 +15,5 @@ pub fn send_data(data: Vec<String>) -> reqwest::Result<Response> {
         ("parse_mode", "HTML"),
         ("disable_web_page_preview", "true")
     ];
-    client.post(&url).form(&params).send()
+    client.post(&url).form(&params).send().await
 }

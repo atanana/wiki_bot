@@ -2,9 +2,11 @@
 name = "wiki_bot"
 version = "1.0.0"
 authors = ["Andrei Tanana <andrei.tanana@deltatre.it>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
-reqwest = "0.9.17"
-select = "0.4.2"
+reqwest = "0.11.13"
+tokio = { version = "1", features = ["full"] }
+select = "0.5.0"
 regex = "1.1.6"
+futures = "0.3"

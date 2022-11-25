@@ -1,14 +1,13 @@
 use std::error::Error;
 
 use regex::{Captures, Regex};
-use reqwest::Response;
 use select::document::Document;
 use select::predicate::Attr;
 
 use crate::errors::NoDyk;
 
-pub fn parse_data(page: Response) -> Result<Vec<String>, Box<dyn Error>> {
-    let document = Document::from_read(page)?;
+pub fn parse_data(page: &str) -> Result<Vec<String>, Box<dyn Error>> {
+    let document = Document::from(page);
     let dyk_root = document.find(Attr("id", "main-dyk")).next().ok_or(NoDyk)?;
     let list = dyk_root.children()
         .filter(|element| element.name() == Some("ul"))
