@@ -1,6 +1,6 @@
 [package]
 name = "wiki_bot"
-version = "1.0.0"
+version = "1.1.0"
 authors = ["Andrei Tanana <andrei.tanana@deltatre.it>"]
 edition = "2021"
 
