@@ -26,6 +26,12 @@ async fn do_work(is_debug: bool) -> Result<(), Box<dyn Error>> {
     if hash == &old_hash {
         return Ok(());
     }
+    send_report(is_debug, &data).await?;
+    hash::save_hash(&hash)?;
+    Ok(())
+}
+
+async fn send_report(is_debug: bool, data: &Vec<String>) -> Result<(), Box<dyn Error>> {
     let clean_data = parse::clear_data(&data)?;
     if is_debug {
         for line in clean_data {
@@ -34,6 +40,5 @@ async fn do_work(is_debug: bool) -> Result<(), Box<dyn Error>> {
     } else {
         io::send_data(clean_data).await?;
     }
-    hash::save_hash(&hash)?;
     Ok(())
 }

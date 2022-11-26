@@ -1,4 +1,5 @@
 use std::error::Error;
+use once_cell::sync::Lazy;
 
 use regex::{Captures, Regex};
 use select::document::Document;
@@ -16,15 +17,19 @@ pub fn parse_data(page: &str) -> Result<Vec<String>, Box<dyn Error>> {
     Ok(list.map(|element| element.html()).collect())
 }
 
+static TAG_REGEX: Lazy<Regex> = Lazy::new(|| { Regex::new(r"</?(\w+).*?>").unwrap() });
+
 pub fn clear_data(data: &Vec<String>) -> Result<Vec<String>, Box<dyn Error>> {
-    let tag_regex = Regex::new(r"</?(\w+).*?>")?;
-    Ok(data.iter().map(|line| clear_line(line, &tag_regex)).collect())
+    let cleared_data = data.iter()
+        .map(|line| clear_line(line))
+        .collect();
+    Ok(cleared_data)
 }
 
-fn clear_line(line: &String, tag_regex: &Regex) -> String {
+fn clear_line(line: &String) -> String {
     let line = line.replace("/wiki", "https://ru.wikipedia.org/wiki")
         .replace("&nbsp;", " ");
-    tag_regex.replace_all(&line, |capture: &Captures| {
+    TAG_REGEX.replace_all(&line, |capture: &Captures| {
         match capture[1].as_ref() {
             "a" => capture[0].to_string(),
             _ => "".to_string()
