@@ -4,6 +4,7 @@ extern crate select;
 
 use std::env;
 use std::error::Error;
+use crate::hash::check_hashes;
 
 mod hash;
 mod parse;
@@ -21,9 +22,9 @@ async fn main() {
 async fn do_work(is_debug: bool) -> Result<(), Box<dyn Error>> {
     let response = io::get_page().await?;
     let data = parse::parse_data(response.as_ref())?;
-    let hash = hash::calculate_hash(&data)?;
-    let old_hash = hash::load_hash();
-    if hash == &old_hash {
+    let hash = hash::calculate_hash(&data);
+    let old_hash = hash::load_hash().unwrap_or(Vec::new());
+    if check_hashes(&old_hash, &hash) {
         return Ok(());
     }
     send_report(is_debug, &data).await?;
